@@ -5,7 +5,6 @@
   <name>Zeebe Test Container QA Tests</name>
   <artifactId>zeebe-test-container-qa</artifactId>
   <packaging>jar</packaging>
-  <groupId>io.zeebe</groupId>
   <inceptionYear>2019</inceptionYear>
   <url>https://github.com/zeebe-io/zeebe-test-container/qa</url>
 
@@ -20,11 +19,13 @@
     <dependency>
       <groupId>io.zeebe</groupId>
       <artifactId>zeebe-test-container-exporter</artifactId>
+      <version>${project.version}</version>
     </dependency>
 
     <dependency>
       <groupId>io.zeebe</groupId>
       <artifactId>zeebe-test-container</artifactId>
+      <version>${project.version}</version>
     </dependency>
 
     <dependency>

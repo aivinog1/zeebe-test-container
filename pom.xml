@@ -41,6 +41,8 @@
 
     <!-- project dependencies -->
     <version.assertj>3.15.0</version.assertj>
+    <version.jnr>0.24</version.jnr>
+    <version.kryo>5.0.0-RC4</version.kryo>
     <version.junit>4.13</version.junit>
     <version.junit-jupiter>5.6.0</version.junit-jupiter>
     <version.log4j>2.13.0</version.log4j>
@@ -68,6 +70,18 @@
         <version>${version.zeebe}</version>
         <scope>import</scope>
         <type>pom</type>
+      </dependency>
+
+      <dependency>
+        <groupId>com.esotericsoftware</groupId>
+        <artifactId>kryo</artifactId>
+        <version>${version.kryo}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.github.jnr</groupId>
+        <artifactId>jnr-unixsocket</artifactId>
+        <version>${version.jnr}</version>
       </dependency>
     
       <dependency>

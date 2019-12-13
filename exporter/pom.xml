@@ -17,8 +17,23 @@
 
   <dependencies>
     <dependency>
+      <groupId>com.esotericsoftware</groupId>
+      <artifactId>kryo</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.github.jnr</groupId>
+      <artifactId>jnr-unixsocket</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>io.zeebe</groupId>
-      <artifactId>zeebe-exporter</artifactId>
+      <artifactId>zeebe-protocol-impl</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.zeebe</groupId>
+      <artifactId>zeebe-exporter-api</artifactId>
     </dependency>
 
     <dependency>

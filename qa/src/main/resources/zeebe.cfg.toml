@@ -1,0 +1,7 @@
+# Zeebe broker configuration file
+[[exporters]]
+id = "container"
+className = "io.zeebe.containers.exporter.ZeebeContainerExporter"
+
+  [exporters.args]
+  socketPath = "/usr/local/zeebe/container.sock"
