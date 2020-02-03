@@ -13,24 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.containers.exporter.kryo;
+package io.zeebe.containers.exporter.protocol;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Input;
-import io.zeebe.containers.exporter.RecordReader;
-import io.zeebe.protocol.record.Record;
+import io.zeebe.protocol.record.value.MessageSubscriptionRecordValue;
+import org.immutables.value.Value;
 
-class KryoRecordReader implements RecordReader {
-  private final Kryo kryo;
-  private final Input input;
-
-  KryoRecordReader(final Kryo kryo, final Input input) {
-    this.kryo = kryo;
-    this.input = input;
-  }
-
-  @Override
-  public Record read() {
-    return (Record) kryo.readClassAndObject(input);
-  }
-}
+@Value.Immutable
+@ZeebeStyle
+public abstract class AbstractMessageSubscriptionRecordValue
+    implements MessageSubscriptionRecordValue {}

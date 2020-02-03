@@ -6,7 +6,7 @@
   <artifactId>zeebe-test-container-root</artifactId>
   <packaging>pom</packaging>
   <groupId>io.zeebe</groupId>
-  <version>0.22.1-SNAPSHOT</version>
+  <version>0.23.0-SNAPSHOT</version>
   <inceptionYear>2019</inceptionYear>
   <url>https://github.com/zeebe-io/zeebe-test-container</url>
 
@@ -41,12 +41,13 @@
 
     <!-- project dependencies -->
     <version.assertj>3.15.0</version.assertj>
+    <version.immutables>2.8.2</version.immutables>
     <version.jnr>0.24</version.jnr>
-    <version.kryo>5.0.0-RC4</version.kryo>
     <version.junit>4.13</version.junit>
     <version.junit-jupiter>5.6.0</version.junit-jupiter>
     <version.log4j>2.13.0</version.log4j>
     <version.slf4j>1.7.30</version.slf4j>
+    <version.spotbugs>3.1.12</version.spotbugs>
     <version.testcontainers>1.12.5</version.testcontainers>
     <version.zeebe>0.22.1</version.zeebe>
 
@@ -73,17 +74,23 @@
       </dependency>
 
       <dependency>
-        <groupId>com.esotericsoftware</groupId>
-        <artifactId>kryo</artifactId>
-        <version>${version.kryo}</version>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-annotations</artifactId>
+        <version>${version.spotbugs}</version>
       </dependency>
 
       <dependency>
-        <groupId>com.github.jnr</groupId>
-        <artifactId>jnr-unixsocket</artifactId>
-        <version>${version.jnr}</version>
+        <groupId>org.immutables</groupId>
+        <artifactId>value</artifactId>
+        <version>${version.immutables}</version>
       </dependency>
-    
+
+      <dependency>
+        <groupId>org.immutables</groupId>
+        <artifactId>serial</artifactId>
+        <version>${version.immutables}</version>
+      </dependency>
+
       <dependency>
         <groupId>org.testcontainers</groupId>
         <artifactId>testcontainers</artifactId>
@@ -143,6 +150,13 @@
   <build>
     <pluginManagement>
       <plugins>
+        <!-- COMPILER -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${plugin.version.compiler}</version>
+        </plugin>
+
         <!-- LICENSE PLUGIN -->
         <plugin>
           <groupId>com.mycila</groupId>

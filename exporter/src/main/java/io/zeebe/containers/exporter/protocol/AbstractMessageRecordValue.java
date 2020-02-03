@@ -13,16 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.containers.exporter;
+package io.zeebe.containers.exporter.protocol;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
+import io.zeebe.protocol.record.value.MessageRecordValue;
+import org.immutables.value.Value;
 
-@Timeout(5_000)
-@Execution(ExecutionMode.CONCURRENT)
-class ZeebeContainerExporterTest {
-  @Test
-  void shouldExportRecords() {}
-}
+@Value.Immutable
+@ZeebeStyle
+public abstract class AbstractMessageRecordValue implements MessageRecordValue {}

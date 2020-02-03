@@ -15,46 +15,61 @@
  */
 package io.zeebe.containers.exporter;
 
-import java.util.Objects;
+import io.zeebe.util.DurationUtil;
+import java.time.Duration;
 
 public class ZeebeContainerConfig {
-  private String socketPath;
+  private int port;
+  private String serverShutdown;
+  private int maxRecordQueueSize;
+  private int maxResponseBatchSize;
 
   public ZeebeContainerConfig() {}
 
-  public ZeebeContainerConfig(final String socketPath) {
-    this.socketPath = socketPath;
+  public ZeebeContainerConfig(
+      final int port,
+      final String serverShutdown,
+      final int maxRecordQueueSize,
+      final int maxResponseBatchSize) {
+    this.port = port;
+    this.serverShutdown = serverShutdown;
+    this.maxRecordQueueSize = maxRecordQueueSize;
+    this.maxResponseBatchSize = maxResponseBatchSize;
   }
 
-  public String getSocketPath() {
-    return socketPath;
+  public int getPort() {
+    return port;
   }
 
-  public void setSocketPath(final String socketPath) {
-    this.socketPath = socketPath;
+  public void setPort(final int port) {
+    this.port = port;
   }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(getSocketPath());
+  public Duration getServerShutdownPeriod() {
+    return DurationUtil.parse(serverShutdown);
   }
 
-  @Override
-  public boolean equals(final Object o) {
-    if (this == o) {
-      return true;
-    }
-
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-
-    final ZeebeContainerConfig that = (ZeebeContainerConfig) o;
-    return Objects.equals(getSocketPath(), that.getSocketPath());
+  public String getServerShutdown() {
+    return serverShutdown;
   }
 
-  @Override
-  public String toString() {
-    return "ZeebeContainerConfig{" + "socketPath='" + socketPath + '\'' + '}';
+  public void setServerShutdown(final String serverShutdown) {
+    this.serverShutdown = serverShutdown;
+  }
+
+  public int getMaxRecordQueueSize() {
+    return maxRecordQueueSize;
+  }
+
+  public void setMaxRecordQueueSize(final int maxRecordQueueSize) {
+    this.maxRecordQueueSize = maxRecordQueueSize;
+  }
+
+  public int getMaxResponseBatchSize() {
+    return maxResponseBatchSize;
+  }
+
+  public void setMaxResponseBatchSize(final int maxResponseBatchSize) {
+    this.maxResponseBatchSize = maxResponseBatchSize;
   }
 }

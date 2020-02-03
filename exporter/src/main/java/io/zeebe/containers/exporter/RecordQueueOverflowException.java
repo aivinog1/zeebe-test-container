@@ -15,14 +15,13 @@
  */
 package io.zeebe.containers.exporter;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
+public class RecordQueueOverflowException extends RuntimeException {
 
-@Timeout(5_000)
-@Execution(ExecutionMode.CONCURRENT)
-class ZeebeContainerExporterTest {
-  @Test
-  void shouldExportRecords() {}
+  private static final long serialVersionUID = 347516628439109697L;
+  private static final String MESSAGE_FORMAT =
+      "Failed to enqueue record for export, queue is at max size %d";
+
+  public RecordQueueOverflowException(final int queueSize) {
+    super(String.format(MESSAGE_FORMAT, queueSize));
+  }
 }

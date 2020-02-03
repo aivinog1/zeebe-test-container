@@ -13,18 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.containers.exporter;
+package io.zeebe.containers.exporter.protocol;
 
-import io.zeebe.protocol.record.Record;
-import java.io.IOException;
-import java.nio.channels.ReadableByteChannel;
+import io.zeebe.protocol.record.value.JobBatchRecordValue;
+import org.immutables.value.Value;
 
-@FunctionalInterface
-public interface RecordReader {
-  Record read();
-
-  @FunctionalInterface
-  interface Provider {
-    RecordReader newReader(ReadableByteChannel inputChannel) throws IOException;
-  }
-}
+@Value.Immutable
+@ZeebeStyle
+public abstract class AbstractJobBatchRecordValue implements JobBatchRecordValue {}

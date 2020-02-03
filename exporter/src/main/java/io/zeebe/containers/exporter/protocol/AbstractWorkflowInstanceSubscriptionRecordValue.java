@@ -13,18 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.containers.exporter;
+package io.zeebe.containers.exporter.protocol;
 
-import io.zeebe.protocol.record.Record;
-import java.io.IOException;
-import java.nio.channels.WritableByteChannel;
+import io.zeebe.protocol.record.value.WorkflowInstanceSubscriptionRecordValue;
+import org.immutables.value.Value;
 
-@FunctionalInterface
-public interface RecordWriter {
-  void write(Record record) throws IOException;
-
-  @FunctionalInterface
-  interface Provider {
-    RecordWriter newWriter(WritableByteChannel outputChannel) throws IOException;
-  }
-}
+@Value.Immutable
+@ZeebeStyle
+public abstract class AbstractWorkflowInstanceSubscriptionRecordValue
+    implements WorkflowInstanceSubscriptionRecordValue {}

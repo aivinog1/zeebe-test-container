@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.containers.exporter;
+package io.zeebe.containers.exporter.protocol;
 
-import java.io.IOException;
-import java.nio.channels.SocketChannel;
+import io.zeebe.protocol.record.value.VariableDocumentRecordValue;
+import org.immutables.value.Value;
 
-@FunctionalInterface
-public interface SocketProvider {
-  SocketChannel provide(ZeebeContainerConfig config) throws IOException;
-}
+@Value.Immutable
+@ZeebeStyle
+public abstract class AbstractVariableDocumentRecordValue implements VariableDocumentRecordValue {}

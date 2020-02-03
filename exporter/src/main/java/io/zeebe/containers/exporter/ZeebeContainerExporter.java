@@ -15,43 +15,50 @@
  */
 package io.zeebe.containers.exporter;
 
-import io.zeebe.containers.exporter.kryo.KryoProvider;
+import io.zeebe.containers.exporter.transport.ProtocolServer;
 import io.zeebe.exporter.api.Exporter;
 import io.zeebe.exporter.api.context.Context;
 import io.zeebe.exporter.api.context.Controller;
 import io.zeebe.protocol.record.Record;
+import io.zeebe.protocol.record.RecordValue;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.nio.channels.ClosedChannelException;
-import java.nio.channels.SocketChannel;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ZeebeContainerExporter implements Exporter {
-  private final SocketProvider socketProvider;
-  private final RecordWriter.Provider recordWriterProvider;
+  private final ProtocolServer.Provider serverProvider;
 
   private ZeebeContainerConfig config;
   private Controller controller;
   private String id;
   private Logger logger;
-  private RecordWriter recordWriter;
-  private SocketChannel socket;
+  private ProtocolServer server;
+  private BlockingQueue<Record<RecordValue>> recordQueue;
 
-  public ZeebeContainerExporter(
-      final SocketProvider socketProvider, final RecordWriter.Provider recordWriterProvider) {
-    this.socketProvider = socketProvider;
-    this.recordWriterProvider = recordWriterProvider;
+  public ZeebeContainerExporter(final ProtocolServer.Provider serverProvider) {
+    this.serverProvider = serverProvider;
   }
 
   public ZeebeContainerExporter() {
-    this(new UnixSocketProvider(), new KryoProvider());
+    this(ProtocolServer.Provider.tcpProvider());
   }
 
   @Override
-  public void configure(final Context context) throws Exception {
+  public void configure(final Context context) {
     config = context.getConfiguration().instantiate(ZeebeContainerConfig.class);
     logger = context.getLogger();
     id = context.getConfiguration().getId();
+    recordQueue = new ArrayBlockingQueue<>(config.getMaxRecordQueueSize());
+    server =
+        serverProvider.provideProtocolServer(
+            id,
+            recordQueue,
+            controller,
+            config,
+            LoggerFactory.getLogger(logger.getName() + ".server"));
 
     logger.debug("{} - Configured exporter: {}", id, this);
   }
@@ -61,8 +68,7 @@ public class ZeebeContainerExporter implements Exporter {
     this.controller = controller;
 
     try {
-      socket = socketProvider.provide(config);
-      recordWriter = recordWriterProvider.newWriter(socket);
+      server.open(config.getPort());
     } catch (final IOException e) {
       throw new UncheckedIOException(e);
     }
@@ -72,27 +78,20 @@ public class ZeebeContainerExporter implements Exporter {
 
   @Override
   public void close() {
-    if (socket != null) {
-      try {
-        socket.close();
-      } catch (final ClosedChannelException ignored) {
-        // can be safely ignored
-      } catch (final IOException e) {
-        logger.error("{} - Failed to close output socket channel", id, e);
-      }
+    if (server != null) {
+      server.close(config.getServerShutdownPeriod());
+      server = null;
     }
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public void export(final Record record) {
-    try {
-      recordWriter.write(record);
-    } catch (final IOException e) {
-      throw new UncheckedIOException(e);
+    if (recordQueue.offer(record)) {
+      logger.trace("{} - Exported record {}", id, record);
+    } else {
+      throw new RecordQueueOverflowException(config.getMaxRecordQueueSize());
     }
-
-    logger.trace("{} - Exported record {}", id, record);
-    controller.updateLastExportedRecordPosition(record.getPosition());
   }
 
   @Override
@@ -102,10 +101,8 @@ public class ZeebeContainerExporter implements Exporter {
         + config
         + ", id='"
         + id
-        + "', socketProvider='"
-        + socketProvider.getClass().getName()
-        + "', recordWriterProvider='"
-        + recordWriterProvider.getClass().getName()
+        + "', serverProvider='"
+        + serverProvider.getClass().getName()
         + '\''
         + '}';
   }

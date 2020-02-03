@@ -13,21 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.containers.exporter;
+package io.zeebe.containers.exporter.protocol;
 
-import java.io.IOException;
-import java.nio.channels.SocketChannel;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import jnr.unixsocket.UnixSocketAddress;
-import jnr.unixsocket.UnixSocketChannel;
+import io.zeebe.protocol.record.Record;
+import io.zeebe.protocol.record.RecordValue;
+import org.immutables.value.Value;
 
-class UnixSocketProvider implements SocketProvider {
+@Value.Immutable
+@ZeebeStyle
+public abstract class AbstractRecord<T extends RecordValue> implements Record<T> {
+  @SuppressWarnings({"MethodDoesntCallSuperMethod", "squid:S2975", "squid:S1182"})
   @Override
-  public SocketChannel provide(final ZeebeContainerConfig config) throws IOException {
-    final Path socketPath = Files.createFile(Paths.get(config.getSocketPath()));
-    final UnixSocketAddress address = new UnixSocketAddress(socketPath.toFile());
-    return UnixSocketChannel.open(address);
+  public Record<T> clone() {
+    return io.zeebe.containers.exporter.protocol.ImmutableRecord.copyOf(this);
   }
 }
